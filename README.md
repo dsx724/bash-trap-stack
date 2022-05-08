@@ -1,6 +1,6 @@
 # Bash Trap Stack
 ## Purpose
-The traps.sh shell script allows you to create a stack of commands to execute for trap.
+The traps.sh bash shell script allows you to create a stack of commands to execute for trap.
 ## Commands
 * traps_start - registers the exit trap
 * traps_push $@ - pushes $@ as one entry to the stack
@@ -20,4 +20,5 @@ The traps.sh shell script allows you to create a stack of commands to execute fo
 * traps_pop
 * traps_stop
 ## Notes
+Tested against Bash 5.
 You can use *set -eE* along with *TRAPS_SIGNAL=ERR* before you start the trap stack to get the function and line number that triggered the trap.
