@@ -14,7 +14,7 @@ function traps_start {
 	if [ -z "$TRAPS_LENGTH" ]; then
 		TRAPS_LENGTH=0
 		if [ "$TRAPS_SIGNAL" = "ERR" ]; then
-			trap 'traps_exit $LINENO ${#FUNCNAME[@]} ${BASH_SOURCE[@]} "${BASH_LINENO[@]}" "${FUNCNAME[@]}"' $TRAPS_SIGNAL
+			trap 'traps_exit $LINENO ${#FUNCNAME[@]} "${BASH_SOURCE[@]}" "${BASH_LINENO[@]}" "${FUNCNAME[@]}"' $TRAPS_SIGNAL
 		else
 			trap traps_exit $TRAPS_SIGNAL
 		fi
@@ -124,20 +124,12 @@ function traps_cancel {
 }
 
 function traps_exit {
-	if [ "$TRAPS_DEBUG" -eq 1 ]; then
-		if [ "$TRAPS_SIGNAL" = "ERR" ]; then
-			echo "$FUNCNAME: $TRAPS_SIGNAL in $3 line $1" >&2
-			local i=1
-			while [ $i -lt $2 ]; do
-				local i_func=$(($2*2+$i+2))
-				local i_file=$(($i+3))
-				local i_line=$(($2+$i+2))
-				echo "$FUNCNAME: trace: ${@:$i_func:1} in ${@:$i_file:1} line ${@:$i_line:1}" >&2
-				i=$((i+1))
-			done
-		fi
+	if [ "$TRAPS_DEBUG" -eq 1 ] && [ "$TRAPS_SIGNAL" = "ERR" ]; then
+		local IFS=' '
+		trap "traps_exit_now ${*@Q}" EXIT
+	else
+		trap - $TRAPS_SIGNAL
 	fi
-	trap - $TRAPS_SIGNAL
 	if [ -z "$TRAPS_LENGTH" ]; then
 		if [ "$TRAPS_DEBUG" -eq 1 ]; then
 			echo "$FUNCNAME: traps not initiated" >&2
@@ -148,6 +140,18 @@ function traps_exit {
 		traps_pop
 	done
 	return 1
+}
+
+function traps_exit_now {
+	echo "$FUNCNAME: $TRAPS_SIGNAL in $3 line $1" >&2
+	local i=1
+	while [ $i -lt $2 ]; do
+		local i_func=$(($2*2+$i+2))
+		local i_file=$(($i+3))
+		local i_line=$(($2+$i+2))
+		echo "$FUNCNAME: trace: ${@:$i_func:1} in ${@:$i_file:1} line ${@:$i_line:1}" >&2
+		i=$((i+1))
+	done
 }
 
 function traps_diag {
