@@ -76,6 +76,21 @@ function traps_pop {
 	fi
 }
 
+function traps_popUntilLength {
+	if [ -z "$TRAPS_LENGTH" ]; then
+		if [ "$TRAPS_DEBUG" -eq 1 ]; then
+			echo "$FUNCNAME: traps not started" >&2
+		fi
+		return 1
+	elif [ "$1" -gt $TRAPS_LENGTH ]; then
+		echo "$FUNCNAME: traps length below target" >&2
+		return 1
+	fi
+	while [ "$TRAPS_LENGTH" -gt "$1" ]; do
+		traps_pop
+	done
+}
+
 function traps_drop {
 	if [ -z "$TRAPS_LENGTH" ]; then
 		if [ "$TRAPS_DEBUG" -eq 1 ]; then
