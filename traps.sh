@@ -59,7 +59,7 @@ function traps_pop {
 		return 1
 	elif [ $TRAPS_LENGTH -gt 0 ]; then
 		local trap_length=${TRAPS_LENGTHS[@]: -1}
-		local trap_cmd=(${TRAPS_PARAMS[@]: -$trap_length})
+		local trap_cmd=("${TRAPS_PARAMS[@]: -$trap_length}")
 		local traps_params_end=$((${#TRAPS_PARAMS[@]}-trap_length))
 		TRAPS_PARAMS=("${TRAPS_PARAMS[@]:0:$traps_params_end}")
 		TRAPS_LENGTH=$((TRAPS_LENGTH-1))
