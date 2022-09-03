@@ -165,7 +165,7 @@ function traps_exit_now {
 		local i_file=$(($i+3))
 		local i_line=$(($2+$i+2))
 		echo "$FUNCNAME: trace: ${@:$i_func:1} in ${@:$i_file:1} line ${@:$i_line:1}" >&2
-		i=$((i+1))
+		local i=$((i+1))
 	done
 }
 
